@@ -202,11 +202,15 @@ require('lazy').setup({
       spec = {
         { '<leader>c', group = '[C]ode', mode = { 'n', 'x' } },
         { '<leader>d', group = '[D]ocument' },
-        { '<leader>r', group = '[R]ename' },
+        -- { '<leader>r', group = '[R]ename' },
         { '<leader>s', group = '[S]earch' },
         { '<leader>w', group = '[W]orkspace' },
         { '<leader>t', group = '[T]oggle' },
         { '<leader>h', group = 'Git [H]unk', mode = { 'n', 'v' } },
+        { '<leader>g', group = 'Git' },
+        { '<leader>H', group = '[H]arpoon' },
+        { '<leader>u', group = '[U]I' },
+        { '<leader>x', group = 'Quickfix & Diagnostics' },
       },
     },
   },
@@ -398,7 +402,7 @@ require('lazy').setup({
 
           -- Rename the variable under your cursor.
           --  Most Language Servers support renaming across files, etc.
-          map('<leader>rn', vim.lsp.buf.rename, '[R]e[n]ame')
+          map('<leader>r', vim.lsp.buf.rename, '[R]ename')
 
           -- Execute a code action, usually your cursor needs to be on top of an error
           -- or a suggestion from your LSP for this to activate.
@@ -476,7 +480,8 @@ require('lazy').setup({
         --    https://github.com/pmizio/typescript-tools.nvim
         --
         -- But for many setups, the LSP (`tsserver`) will work just fine
-        tsserver = {},
+        -- tsserver = {},
+        ts_ls = {},
         --
 
         lua_ls = {
@@ -855,9 +860,13 @@ require('lazy').setup({
           show_hidden = true,
         },
       }
-
-      vim.keymap.set('n', '-', '<CMD>Oil<CR>', { desc = 'Open parent directory' })
-      vim.keymap.set('n', '<leader>-', require('oil').toggle_float)
+    end,
+    keys = function(_, keys)
+      return {
+        { '-', '<CMD>Oil<CR>', desc = 'Oil: Open parent directory' },
+        { '<leader>-', require('oil').toggle_float, desc = 'Oil: Open parent directory' },
+        unpack(keys),
+      }
     end,
   },
 }, {
@@ -894,7 +903,7 @@ vim.opt.foldlevelstart = 99
 
 vim.opt.inccommand = 'split'
 vim.opt.background = 'dark'
-vim.cmd.colorscheme 'carbonfox'
+vim.cmd.colorscheme 'oxocarbon'
 
 require 'keymaps'
 require 'autocommands'
