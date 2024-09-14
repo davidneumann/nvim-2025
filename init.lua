@@ -1,3 +1,7 @@
+vim.opt.tabstop = 2
+vim.opt.shiftwidth = 2
+vim.opt.softtabstop = 2
+
 -- Set <space> as the leader key
 -- See `:help mapleader`
 --  NOTE: Must happen before plugins are loaded (otherwise wrong leader will be used)
@@ -375,6 +379,10 @@ require('lazy').setup({
             vim.keymap.set(mode, keys, func, { buffer = event.buf, desc = 'LSP: ' .. desc })
           end
 
+          map('K', vim.lsp.buf.hover, 'Hover Documentation')
+          map('<A-k>', vim.lsp.buf.signature_help, 'Signature Documentation')
+          map('<A-k>', vim.lsp.buf.signature_help, 'Signature Documentation', 'i')
+
           -- Jump to the definition of the word under your cursor.
           --  This is where a variable was first declared, or where a function is defined, etc.
           --  To jump back, press <C-t>.
@@ -745,6 +753,7 @@ require('lazy').setup({
   'neanias/everforest-nvim',
   'nyoom-engineering/oxocarbon.nvim',
   'EdenEast/nightfox.nvim',
+  { 'bluz71/vim-moonfly-colors', name = 'moonfly', lazy = false, priority = 1000 },
   -- priority = 1000, -- Make sure to load this before all the other start plugins.
   -- init = function()
   --   -- Load the colorscheme here.
@@ -813,7 +822,8 @@ require('lazy').setup({
         --  the list of additional_vim_regex_highlighting and disabled languages for indent.
         additional_vim_regex_highlighting = { 'ruby' },
       },
-      indent = { enable = true, disable = { 'ruby' } },
+      -- indent = { enable = true, disable = { 'ruby' } },
+      indent = { enable = true, disable = { 'ruby', 'typescript', 'typescritreact' } },
     },
     -- There are additional nvim-treesitter modules that you can use to interact
     -- with nvim-treesitter. You should go explore a few and see what interests you:
@@ -903,7 +913,7 @@ vim.opt.foldlevelstart = 99
 
 vim.opt.inccommand = 'split'
 vim.opt.background = 'dark'
-vim.cmd.colorscheme 'oxocarbon'
+vim.cmd.colorscheme 'moonfly'
 
 require 'keymaps'
 require 'autocommands'

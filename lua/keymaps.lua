@@ -97,3 +97,9 @@ vim.keymap.set('n', '<leader>cl', ':LspRestart<cr>', { desc = 'LSP [C]ode action
 vim.keymap.set('n', '<leader>qf', function()
   vim.lsp.buf.code_action { apply = true }
 end, { noremap = true, silent = false, desc = 'Auto fix all problems' })
+
+-- Diagnostic keymaps
+vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'Go to previous diagnostic message' })
+vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = 'Go to next diagnostic message' })
+vim.keymap.set('n', '<leader>de', vim.diagnostic.open_float, { desc = 'Open floating diagnostic message' })
+vim.keymap.set('n', '<leader>dl', vim.diagnostic.setloclist, { desc = 'Open diagnostics list' })
