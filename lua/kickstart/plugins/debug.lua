@@ -23,6 +23,12 @@ return {
 
     -- Add your own debuggers here
     'leoluz/nvim-dap-go',
+
+    -- Breakpoints between sessions
+    'Weissle/persistent-breakpoints.nvim',
+
+    -- Text values of vars during breakpoints
+    'theHamsta/nvim-dap-virtual-text',
   },
   keys = function(_, keys)
     local dap = require 'dap'
@@ -30,17 +36,20 @@ return {
     return {
       -- Basic debugging keymaps, feel free to change to your liking!
       { '<F5>', dap.continue, desc = 'Debug: Start/Continue' },
-      { '<F1>', dap.step_into, desc = 'Debug: Step Into' },
-      { '<F2>', dap.step_over, desc = 'Debug: Step Over' },
-      { '<F3>', dap.step_out, desc = 'Debug: Step Out' },
-      { '<leader>b', dap.toggle_breakpoint, desc = 'Debug: Toggle Breakpoint' },
+      { '<F11>', dap.step_into, desc = 'Debug: Step Into' },
+      { '<F10>', dap.step_over, desc = 'Debug: Step Over' },
+      { 'S-<F11>', dap.step_out, desc = 'Debug: Step Out' },
+      { '<leader>b', require('persistent-breakpoints.api').toggle_breakpoint, desc = 'Debug: Toggle Breakpoint' },
       {
         '<leader>B',
-        function()
-          dap.set_breakpoint(vim.fn.input 'Breakpoint condition: ')
-        end,
+        require('persistent-breakpoints.api').set_conditional_breakpoint,
+        -- function()
+        --   dap.set_breakpoint(vim.fn.input 'Breakpoint condition: ')
+        -- end,
         desc = 'Debug: Set Breakpoint',
       },
+      { '<leader>Dc', require('persistent-breakpoints.api').clear_all_breakpoints, desc = 'Clear all breakpoints' },
+      { '<leader>Dl', require('persistent-breakpoints.api').set_log_point, desc = 'Set log point' },
       -- Toggle to see last session result. Without this, you can't see session output in case of unhandled exception.
       { '<F7>', dapui.toggle, desc = 'Debug: See last session result.' },
       unpack(keys),
@@ -64,6 +73,7 @@ return {
       ensure_installed = {
         -- Update this to ensure that you have the debuggers for the langs you want
         'delve',
+        'js',
       },
     }
 
@@ -101,5 +111,105 @@ return {
         detached = vim.fn.has 'win32' == 0,
       },
     }
+
+    dap.adapters['pwa-node'] = {
+      type = 'server',
+      host = 'localhost',
+      port = '${port}',
+      executable = {
+        command = vim.fn.exepath 'js-debug-adapter',
+        args = { '${port}' },
+      },
+      rootPath = '${workspaceFolder}',
+      cwd = '${workspaceFolder}',
+    }
+
+    for _, language in ipairs { 'typescript', 'javascript' } do
+      dap.configurations[language] = {
+        {
+          type = 'pwa-node',
+          request = 'launch',
+          name = '[node] Launch file',
+          -- program = '${file}',
+          cwd = '${workspaceFolder}',
+          args = { '${file}' },
+          -- runtimeExecutable = "npm",
+          runtimeArgs = { '-r', 'ts-node/register' },
+          sourceMaps = true,
+          protocol = 'inspector',
+        },
+        {
+          type = 'pwa-node',
+          request = 'launch',
+          name = '[node] Launch dev',
+          -- program = '${file}',
+          runtimeExecutable = 'npm',
+          rootPath = '${workspaceFolder}',
+          cwd = '${workspaceFolder}',
+          args = { 'run', 'develop' },
+          -- runtimeArgs = { '-r', 'ts-node/register' },
+          sourceMaps = true,
+          protocol = 'inspector',
+          console = 'integratedTerminal',
+          outFiles = { '${workspaceFolder}/dist/**/*.js' },
+          skipFiles = { '${workspaceFolder}/node_modules/**/*.js', '<node_internals>/**' },
+        },
+        {
+          type = 'pwa-node',
+          request = 'launch',
+          name = '[node] Launch dev tsx',
+          -- program = '${file}',
+          runtimeExecutable = 'npx',
+          rootPath = '${workspaceFolder}',
+          cwd = '${workspaceFolder}',
+          -- rootPath = vim.fn.getcwd(),
+          -- cwd = vim.fn.getcwd(),
+          -- args = { 'ts-node-dev', '--', '--transpile-only', '--require ', './src/server.ts' },
+          args = { 'src/server.ts' },
+          runtimeArgs = { 'ts-node-dev', '--transpile-only', '--require', 'dotenv/config' },
+          sourceMaps = true,
+          protocol = 'inspector',
+          console = 'integratedTerminal',
+          outFiles = { '${workspaceFolder}/dist/**/*.js' },
+          skipFiles = { '${workspaceFolder}/node_modules/**/*.js', '<node_internals>/**' },
+          resolveSourceMapLocations = {
+            '${workspaceFolder}/**',
+            '!**/node_modules/**',
+          },
+        },
+        {
+          type = 'pwa-node',
+          request = 'attach',
+          name = '[node] Attach',
+          processId = require('dap.utils').pick_process,
+          cwd = '${workspaceFolder}',
+        },
+        {
+          type = 'pwa-node',
+          request = 'launch',
+          name = 'Debug Jest Tests',
+          -- trace = true, -- include debugger info
+          runtimeExecutable = 'node',
+          runtimeArgs = {
+            './node_modules/jest/bin/jest.js',
+            '--runInBand',
+          },
+          rootPath = '${workspaceFolder}',
+          cwd = '${workspaceFolder}',
+          console = 'integratedTerminal',
+          internalConsoleOptions = 'neverOpen',
+        },
+      }
+    end
+
+    -- -- Attempt to load vscode launch.json but I think this isn't suppose to be here
+    -- require('dap.ext.vscode').load_launchjs()
+
+    -- Persistent breakpoints
+    require('persistent-breakpoints').setup {
+      load_breakpoints_event = { 'BufReadPost' },
+    }
+
+    require('nvim-dap-virtual-text').setup()
   end,
 }
