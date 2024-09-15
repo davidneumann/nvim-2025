@@ -26,22 +26,45 @@ return {
 
       -- see below for full list of optional dependencies 👇
     },
-    opts = {
-      workspaces = {
-        {
-          name = 'personal',
-          path = '~/vaults/personal',
-        },
-        {
-          name = 'work',
-          path = '~/vaults/work',
-        },
-      },
-    },
     config = function()
       require('obsidian').setup {
         ui = { enable = false },
+        workspaces = {
+          {
+            name = 'personal',
+            path = '~/personal',
+          },
+          {
+            name = 'no-vault',
+            path = function()
+              -- alternatively use the CWD:
+              return assert(vim.fn.getcwd())
+              -- return assert(vim.fs.dirname(vim.api.nvim_buf_get_name(0)))
+            end,
+            overrides = {
+              notes_subdir = vim.NIL, -- have to use 'vim.NIL' instead of 'nil'
+              new_notes_location = 'current_dir',
+              templates = {
+                folder = vim.NIL,
+              },
+              disable_frontmatter = true,
+            },
+          },
+        },
       }
     end,
+    -- keys = function(_, keys)
+    --   return {
+    --     { '<leader>o<space>', '<cmd>ObsidianToggleCheckbox<cr>', desc = '[O]bsidian [t]oggle checkbox' },
+    --     { '<leader>ot', '<cmd>ObsidianTags<cr>', desc = '[O]bsidian [t]ags' },
+    --     { '<leader>oT', '<cmd>ObsidianTemplates<cr>', desc = '[O]bsidian [T]emplates' },
+    --     { '<leader>on', '<cmd>ObsidianNew<cr>', desc = '[O]bsidian [n]ew' },
+    --     { '<leader>oN', '<cmd>ObsidianNewFromTemplate<cr>', desc = '[O]bsidian [N]ew from template' },
+    --     { '<leader>oo', '<cmd>ObsidianOpen<cr>', desc = '[O]bsidian [o]pen' },
+    --     { '<leader>ob', '<cmd>ObsidianBacklinks<cr>', desc = '[O]bsidian [b]acklinks' },
+    --     { '<leader>os', '<cmd>ObsidianSearch<cr>', desc = '[O]bsidian [s]earch' },
+    --     unpack(keys),
+    --   }
+    -- end,
   },
 }

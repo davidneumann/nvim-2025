@@ -919,3 +919,6 @@ vim.cmd.colorscheme 'moonfly'
 
 require 'keymaps'
 require 'autocommands'
+
+vim.opt.spell = true
+vim.opt.spelllang = 'en_us'
