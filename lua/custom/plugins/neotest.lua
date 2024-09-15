@@ -31,11 +31,61 @@ return {
               }
             end,
             env = { CI = true },
-            cwd = function(path)
+            cwd = function(_)
               return vim.fn.getcwd()
             end,
           },
         },
+      }
+    end,
+    keys = function(_, keys)
+      return {
+        { '<leader>Ts', '<cmd>Neotest summary<cr>', desc = '[T]est [s]ummary' },
+        {
+          '<leader>Tc',
+          function()
+            require('neotest').run.run { strategy = 'dap' }
+          end,
+          desc = '[T]est [c]losest',
+        },
+        {
+          '<leader>Tf',
+          function()
+            require('neotest').run.run(vim.fn.expand '%')
+          end,
+          desc = '[T]est all in [f]ile',
+        },
+        {
+          '<leader>Tl',
+          function()
+            require('neotest').run.run_last { strategy = 'dap' }
+          end,
+          desc = '[T]est run [l]ast',
+        },
+        {
+          '<leader>TS',
+          function()
+            require('neotest').run.stop()
+          end,
+          desc = '[T]est [S]stop!',
+        },
+        { '<leader>T', group = '[T]ests' },
+        { '<leader>Tw', group = '[T]ests [w]atch' },
+        {
+          '<leader>Twt',
+          function()
+            require('neotest').watch.toggle()
+          end,
+          desc = '[T]est watch [t]oggle',
+        },
+        {
+          '<leader>Tws',
+          function()
+            require('neotest').watch.stop()
+          end,
+          desc = '[T]est watch [s]top',
+        },
+        unpack(keys),
       }
     end,
   },
