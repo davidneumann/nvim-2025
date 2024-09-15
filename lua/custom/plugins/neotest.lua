@@ -69,8 +69,6 @@ return {
           end,
           desc = '[T]est [S]stop!',
         },
-        { '<leader>T', group = '[T]ests' },
-        { '<leader>Tw', group = '[T]ests [w]atch' },
         {
           '<leader>Twt',
           function()
