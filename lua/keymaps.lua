@@ -57,9 +57,9 @@ function SetKeybinds()
     -- }, opts)
   elseif fileTy == '' then
     require('which-key').add {
-      { '<leader>f', desc = '[F]ile types' },
+      { '<leader>F', desc = '[F]ile types' },
       {
-        '<leader>fj',
+        '<leader>Fj',
         function()
           vim.cmd 'set ft=json'
           vim.cmd "%!jq '.'"
