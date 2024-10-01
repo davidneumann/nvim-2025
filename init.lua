@@ -257,7 +257,7 @@ require('lazy').setup({
         'nvim-telescope/telescope-live-grep-args.nvim',
         -- This will not install any breaking changes.
         -- For major updates, this must be adjusted manually.
-        version = '^1.0.0',
+        version = '*',
       },
     },
     config = function()
@@ -637,8 +637,8 @@ require('lazy').setup({
         -- python = { "isort", "black" },
         --
         -- You can use 'stop_after_first' to run the first available formatter from the list
-        javascript = { 'prettierd', 'prettier', stop_after_first = true },
-        typescript = { 'prettierd', 'prettier', stop_after_first = true },
+        -- javascript = { 'prettierd', 'prettier', stop_after_first = true },
+        -- typescript = { 'prettierd', 'prettier', stop_after_first = true },
       },
     },
   },
@@ -921,6 +921,7 @@ require('lazy').setup({
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
+vim.opt.sw = 2
 vim.cmd.colorscheme 'lunaperche'
 vim.opt.colorcolumn = '80,120'
 
@@ -938,3 +939,6 @@ require 'autocommands'
 
 vim.opt.spell = true
 vim.opt.spelllang = 'en_us'
+
+-- Add quickfist filtering
+vim.cmd 'packadd cfilter'

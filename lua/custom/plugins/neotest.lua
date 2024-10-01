@@ -12,7 +12,7 @@ return {
       require('neotest').setup {
         adapters = {
           require 'neotest-mocha' {
-            command = 'npm test --',
+            command = 'npx mocha --require ts-node/register --require dotenv/config',
             command_args = function(context)
               -- The context contains:
               --   results_path: The file that json results are written to
