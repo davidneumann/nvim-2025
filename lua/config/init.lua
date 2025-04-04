@@ -1,0 +1,6 @@
+require 'config.settings'
+require 'config.lazy'
+require 'config.format'
+require 'config.functions'
+require 'config.keymaps'
+require 'config.spacemark'
