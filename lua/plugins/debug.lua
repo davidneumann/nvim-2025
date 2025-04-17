@@ -33,12 +33,12 @@ return {
       { "<leader>Dj", function() require("dap").down() end,                                                 desc = "Down" },
       { "<leader>Dk", function() require("dap").up() end,                                                   desc = "Up" },
       { "<leader>Dl", function() require("dap").run_last() end,                                             desc = "Run Last" },
-      { "<leader>Do", function() require("dap").step_out() end,                                             desc = "Step Out" },
-      { "<leader>DO", function() require("dap").step_over() end,                                            desc = "Step Over" },
+      { "<leader>DO", function() require("dap").step_out() end,                                             desc = "Step Out" },
+      { "<leader>Do", function() require("dap").step_over() end,                                            desc = "Step Over" },
       { "<leader>DP", function() require("dap").pause() end,                                                desc = "Pause" },
       { "<leader>Dr", function() require("dap").repl.toggle() end,                                          desc = "Toggle REPL" },
       { "<leader>Ds", function() require("dap").session() end,                                              desc = "Session" },
-      { "<leader>Dt", function() require("dap").terminate() end,                                            desc = "Terminate" },
+      { "<leader>DT", function() require("dap").terminate() end,                                            desc = "Terminate" },
       { "<leader>Dw", function() require("dap.ui.widgets").hover() end,                                     desc = "Widgets" },
       { '[d',         vim.diagnostic.goto_prev,                                                             desc = 'Go to previous diagnostic message' },
       { ']d',         vim.diagnostic.goto_next,                                                             desc = 'Go to next diagnostic message' },
@@ -55,12 +55,18 @@ return {
     dependencies = { 'nvim-neotest/nvim-nio' },
     -- stylua: ignore
     keys = {
-      { "<leader>Du", function() require("dapui").toggle({}) end, desc = "Dap UI" },
+      { "<leader>Dt", function() require("dapui").toggle({}) end, desc = "Dap UI toggle" },
       { "<leader>De", function() require("dapui").eval() end,     desc = "Eval",  mode = { "n", "v" } },
     },
-    opts = {},
+    opts = {
+      render = {
+        indent = 1,
+        max_value_lines = 2,
+      },
+    },
     config = function(_, opts)
       local dap = require 'dap'
+      dap.set_log_level 'TRACE'
       local dapui = require 'dapui'
       dapui.setup(opts)
       dap.listeners.after.event_initialized['dapui_config'] = function()
@@ -83,6 +89,15 @@ return {
         },
       }
       dap.adapters['node'] = {
+        type = 'server',
+        host = 'localhost',
+        port = '${port}',
+        executable = {
+          command = 'js-debug',
+          args = { '${port}' },
+        },
+      }
+      dap.adapters['node-terminal'] = {
         type = 'server',
         host = 'localhost',
         port = '${port}',
@@ -131,12 +146,77 @@ return {
               '!**/node_modules/**',
             },
           },
+          {
+            type = 'pwa-node',
+            request = 'launch',
+            name = '[node] Launch npm run dev',
+            -- program = '${file}',
+            runtimeExecutable = 'npm',
+            rootPath = '${workspaceFolder}',
+            cwd = '${workspaceFolder}',
+            -- rootPath = vim.fn.getcwd(),
+            -- cwd = vim.fn.getcwd(),
+            -- args = { 'ts-node-dev', '--', '--transpile-only', '--require ', './src/server.ts' },
+            -- args = { "${file}" },
+            runtimeArgs = { 'run', 'dev', '--inspect' },
+            sourceMaps = true,
+            protocol = 'inspector',
+            console = 'integratedTerminal',
+            outFiles = { '${workspaceFolder}/dist/**/*.js' },
+            skipFiles = { '${workspaceFolder}/node_modules/**/*.js', '<node_internals>/**' },
+            resolveSourceMapLocations = {
+              '${workspaceFolder}/**',
+              '!**/node_modules/**',
+            },
+          },
+          -- {
+          --   type = 'pwa-node',
+          --   request = 'launch',
+          --   name = '[node] Next.js FULLER stack',
+          --   -- program = '${file}',
+          --   runtimeExecutable = '${workspaceFolder}/node_modules/.bin/next',
+          --   rootPath = '${workspaceFolder}',
+          --   cwd = '${workspaceFolder}',
+          --   -- rootPath = vim.fn.getcwd(),
+          --   -- cwd = vim.fn.getcwd(),
+          --   -- args = { 'ts-node-dev', '--', '--transpile-only', '--require ', './src/server.ts' },
+          --   -- args = { "${file}" },
+          --   runtimeArgs = {},
+          --   sourceMaps = true,
+          --   protocol = 'inspector',
+          --   console = 'integratedTerminal',
+          --   outFiles = { '${workspaceFolder}/dist/**/*.js' },
+          --   skipFiles = { '${workspaceFolder}/node_modules/**/*.js', '<node_internals>/**' },
+          --   resolveSourceMapLocations = {
+          --     '${workspaceFolder}/**',
+          --     '!**/node_modules/**',
+          --   },
+          -- },
+          {
+            type = 'pwa-node',
+            request = 'launch',
+            name = '[node] NPM Launch dev start',
+            -- program = '${file}',
+            runtimeExecutable = 'npm',
+            rootPath = '${workspaceFolder}',
+            cwd = '${workspaceFolder}',
+            -- rootPath = vim.fn.getcwd(),
+            -- cwd = vim.fn.getcwd(),
+            -- args = { 'ts-node-dev', '--', '--transpile-only', '--require ', './src/server.ts' },
+            -- args = { "${file}" },
+            runtimeArgs = { 'run', 'start' },
+            sourceMaps = true,
+            protocol = 'inspector',
+            console = 'integratedTerminal',
+            outFiles = { '${workspaceFolder}/dist/**/*.js' },
+            skipFiles = { '${workspaceFolder}/node_modules/**/*.js', '<node_internals>/**' },
+            resolveSourceMapLocations = {
+              '${workspaceFolder}/**',
+              '!**/node_modules/**',
+            },
+          },
         }
       end
     end,
-  },
-  {
-    'theHamsta/nvim-dap-virtual-text',
-    opts = {},
   },
 }

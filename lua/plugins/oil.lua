@@ -8,6 +8,7 @@ return {
       keymaps = {
         ['<C-h>'] = false,
         ['<M-h>'] = 'actions.select_split',
+        ['<leader>Y'] = 'actions.copy_to_system_clipboard',
       },
       view_options = {
         show_hidden = true,

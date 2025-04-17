@@ -4,6 +4,10 @@ vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = 'Go to next diagnos
 vim.keymap.set('n', '<leader>de', vim.diagnostic.open_float, { desc = 'Open floating diagnostic message' })
 vim.keymap.set('n', '<leader>dl', vim.diagnostic.setloclist, { desc = 'Open diagnostics list' })
 
+-- Tabs
+vim.keymap.set('n', ']t', ':tabnext<cr>', { desc = 'Next Tab', silent = true })
+vim.keymap.set('n', '[t', ':tabprevious<cr>', { desc = 'Previous Tab', silent = true })
+
 -- Buffers
 vim.keymap.set('n', '<leader>bs', ':w<cr>', { desc = '[B]uffer [S]ave' })
 

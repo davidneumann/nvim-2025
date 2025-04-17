@@ -72,6 +72,10 @@ return {
             vim.keymap.set(mode, keys, func, { buffer = event.buf, desc = 'LSP: ' .. desc })
           end
 
+          map('K', vim.lsp.buf.hover, 'Hover Documentation')
+          map('<A-k>', vim.lsp.buf.signature_help, 'Signature Documentation')
+          map('<A-k>', vim.lsp.buf.signature_help, 'Signature Documentation', 'i')
+
           -- Jump to the definition of the word under your cursor.
           --  This is where a variable was first declared, or where a function is defined, etc.
           --  To jump back, press <C-t>.
@@ -99,7 +103,7 @@ return {
 
           -- Rename the variable under your cursor.
           --  Most Language Servers support renaming across files, etc.
-          map('<leader>rn', vim.lsp.buf.rename, '[R]e[n]ame')
+          map('<leader>r', vim.lsp.buf.rename, '[R]ename')
 
           -- Execute a code action, usually your cursor needs to be on top of an error
           -- or a suggestion from your LSP for this to activate.

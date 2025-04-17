@@ -1,5 +1,3 @@
-vim.keymap.set('n', '<leader>gg', '<cmd>Neogit<cr>', { desc = '[G]it Neo[g]it' })
-
 return {
   {
     'NeogitOrg/neogit',
