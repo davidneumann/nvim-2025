@@ -1,5 +1,5 @@
 return {
-	{ -- Autocompletion
+  { -- Autocompletion
     'hrsh7th/nvim-cmp',
     event = 'InsertEnter',
     dependencies = {
@@ -28,6 +28,7 @@ return {
         },
       },
       'saadparwaiz1/cmp_luasnip',
+      'mlaursen/vim-react-snippets',
 
       -- Adds other completion capabilities.
       --  nvim-cmp does not ship with all sources by default. They are split
@@ -36,6 +37,7 @@ return {
       'hrsh7th/cmp-path',
     },
     config = function()
+      require('vim-react-snippets').lazy_load()
       -- See `:help cmp`
       local cmp = require 'cmp'
       local luasnip = require 'luasnip'
@@ -114,4 +116,4 @@ return {
       }
     end,
   },
-  }
+}
