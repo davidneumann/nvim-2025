@@ -23,8 +23,17 @@ return {
 
     -- stylua: ignore
     keys = {
-      { "<leader>DB", function() require("dap").set_breakpoint(vim.fn.input('Breakpoint condition: ')) end, desc = "Breakpoint Condition" },
-      { "<leader>Db", function() require("dap").toggle_breakpoint() end,                                    desc = "Toggle Breakpoint" },
+      -- { "<leader>DB", function() require("dap").set_breakpoint(vim.fn.input('Breakpoint condition: ')) end, desc = "Breakpoint Condition" },
+      { "<leader>DB", function()
+        require('config.lib.dap').set_conditional_breakpoint()
+      end, desc = "Breakpoint Condition" },
+      -- { "<leader>Db", function() require("dap").toggle_breakpoint() end,                                    desc = "Toggle Breakpoint" },
+      { "<leader>Db", function()
+        require('config.lib.dap').toggle_breakpoint()
+      end,                                    desc = "Toggle Breakpoint" },
+      { "<leader>DX", function()
+        require('config.lib.dap').clear_breakpoints()
+      end,                                    desc = "Toggle Breakpoint" },
       { "<leader>Dc", function() require("dap").continue() end,                                             desc = "Run/Continue" },
       { "<leader>Da", function() require("dap").continue({ before = get_args }) end,                        desc = "Run with Args" },
       { "<leader>DC", function() require("dap").run_to_cursor() end,                                        desc = "Run to Cursor" },
@@ -55,7 +64,7 @@ return {
     dependencies = { 'nvim-neotest/nvim-nio' },
     -- stylua: ignore
     keys = {
-      { "<leader>Dt", function() require("dapui").toggle({}) end, desc = "Dap UI toggle" },
+      { "<leader>Du", function() require("dapui").toggle({}) end, desc = "Dap UI toggle" },
       { "<leader>De", function() require("dapui").eval() end,     desc = "Eval",  mode = { "n", "v" } },
     },
     opts = {
@@ -78,6 +87,51 @@ return {
       dap.listeners.before.event_exited['dapui_config'] = function()
         dapui.close {}
       end
+
+      dap.adapters.delve = function(callback, config)
+        if config.mode == 'remote' and config.request == 'attach' then
+          callback {
+            type = 'server',
+            host = config.host or '127.0.0.1',
+            port = config.port or '38697',
+          }
+        else
+          callback {
+            type = 'server',
+            port = '${port}',
+            executable = {
+              command = 'dlv',
+              args = { 'dap', '-l', '127.0.0.1:${port}', '--log', '--log-output=dap' },
+              detached = vim.fn.has 'win32' == 0,
+            },
+          }
+        end
+      end
+
+      -- https://github.com/go-delve/delve/blob/master/Documentation/usage/dlv_dap.md
+      dap.configurations.go = {
+        {
+          type = 'delve',
+          name = 'Debug',
+          request = 'launch',
+          program = '${file}',
+        },
+        {
+          type = 'delve',
+          name = 'Debug test', -- configuration for debugging test files
+          request = 'launch',
+          mode = 'test',
+          program = '${file}',
+        },
+        -- works with go.mod packages and sub packages
+        {
+          type = 'delve',
+          name = 'Debug test (go.mod)',
+          request = 'launch',
+          mode = 'test',
+          program = './${relativeFileDirname}',
+        },
+      }
 
       dap.adapters['pwa-node'] = {
         type = 'server',

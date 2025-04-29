@@ -11,7 +11,7 @@ vim.keymap.set('n', '[t', ':tabprevious<cr>', { desc = 'Previous Tab', silent = 
 -- Buffers
 vim.keymap.set('n', '<leader>bs', ':w<cr>', { desc = '[B]uffer [S]ave' })
 
-vim.keymap.set('n', '<leader>bd', ':bd<cr>', { desc = '[B]uffer [D]elete / Close' })
+vim.keymap.set('n', '<leader>bd', ':bp | sp | bn | bd<cr>', { desc = '[B]uffer [D]elete / Close' })
 vim.keymap.set('n', '<leader>bs', ':w<cr>', { desc = '[B]uffer [S]ave' })
 
 function SetKeybinds()
@@ -70,6 +70,35 @@ function SetKeybinds()
     --   ['W'] = { ':w<CR>', 'test write' },
     --   ['Q'] = { ':q<CR>', 'test quit' },
     -- }, opts)
+  elseif fileTy == 'go' then
+    require('which-key').add {
+      {
+        '<leader>co',
+        function()
+          vim.lsp.buf.code_action {
+            apply = true,
+            context = {
+              only = { 'source.organizeImports' },
+              diagnostics = {},
+            },
+          }
+        end,
+        desc = 'Organize Imports',
+      },
+      {
+        '<leader>cR',
+        function()
+          vim.lsp.buf.code_action {
+            apply = true,
+            context = {
+              only = { 'source.removeUnused' },
+              diagnostics = {},
+            },
+          }
+        end,
+        desc = 'Remove Unused Imports',
+      },
+    }
   elseif fileTy == '' then
     require('which-key').add {
       {

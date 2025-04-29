@@ -1,3 +1,5 @@
+-- WARNING: LAZY IS NOT LOADED YET! SETTINGS ONLY IN HERE!!
+
 vim.cmd 'packadd cfilter' -- Add quickfist filtering
 -- vim.cmd.colorscheme("moonfly")
 vim.g.have_nerd_font = true

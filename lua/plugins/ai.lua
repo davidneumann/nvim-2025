@@ -1,23 +1,73 @@
-if os.getenv 'NEOVIM_USE_AI' ~= 'true' then
-  return {}
-end
-
 return {
   {
     'yetone/avante.nvim',
     event = 'VeryLazy',
     version = false, -- Never set this value to "*"! Never!
+    cond = function()
+      return os.getenv 'NEOVIM_USE_AI' == 'true'
+    end,
     opts = {
       -- add any opts here
       -- for example
-      provider = 'openai',
+      provider = 'gemini',
+      -- provider = 'deepseek',
+      -- auto_suggestions_provider = 'gemini',
+      gemini = {
+        endpoint = 'https://generativelanguage.googleapis.com/v1beta/models',
+        model = 'gemini-2.0-flash',
+        timeout = 60000, -- Timeout in milliseconds
+        temperature = 0,
+        max_tokens = 25000,
+      },
+      vendors = {
+        deepseek = {
+          __inherited_from = 'openai',
+          endpoint = 'https://api.deepseek.com',
+          model = 'deepseek-reasoner',
+          api_key_name = 'DEEPSEEK_API_KEY',
+          disable_tools = true,
+          max_tokens = 2048,
+          -- parse_curl_args = function(opts, code_opts)
+          --   local providers = require 'avante.providers'
+          --
+          --   local utils = require 'avante.utils'
+          --   local apiKey = utils.environment.parse(opts.api_key_name, opts._shellenv)
+          --
+          --   local headers = {
+          --     ['Content-Type'] = 'application/json',
+          --     ['x-api-key'] = apiKey,
+          --   }
+          --
+          --   return {
+          --     url = utils.url_join(opts.endpoint, '/chat/completions'),
+          --     headers = headers,
+          --     body = {
+          --       model = opts.model,
+          --       messages = providers.openai:parse_messages(code_opts),
+          --       stream = true,
+          --     },
+          --   }
+          -- end,
+        },
+      },
+      dual_boost = {
+        enabled = false,
+        first_provider = 'deepseek',
+        second_provider = 'gemini',
+        prompt = 'Based on the two reference outputs below, generate a response that incorporates elements from both but reflects your own judgment and unique perspective. Do not provide any explanation, just give the response directly. Reference Output 1: [{{provider1_output}}], Reference Output 2: [{{provider2_output}}]',
+        timeout = 60000, -- Timeout in milliseconds
+      },
       openai = {
         endpoint = 'https://api.openai.com/v1',
         model = 'gpt-4o', -- your desired model (or use gpt-4o, etc.)
         timeout = 30000, -- Timeout in milliseconds, increase this for reasoning models
         temperature = 0,
-        max_tokens = 8192, -- Increase this to include reasoning tokens (for reasoning models)
-        --reasoning_effort = "medium", -- low|medium|high, only used for reasoning models
+        max_tokens = 60000, -- Increase this to include reasoning tokens (for reasoning models)
+        reasoning_effort = 'medium', -- low|medium|high, only used for reasoning models
+      },
+      hints = { enabled = false },
+      behaviour = {
+        enable_cursor_planning_mode = true, -- Whether to enable Cursor Planning Mode. Default to false.
       },
     },
     -- if you want to build from source then do `make BUILD_FROM_SOURCE=true`
