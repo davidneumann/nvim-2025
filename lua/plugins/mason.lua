@@ -8,7 +8,6 @@ return {
     opts = { ensure_installed = { 'lua_ls', 'gopls' } },
     dependencies = {
       { 'mason-org/mason.nvim', opts = {} },
-      'neovim/nvim-lspconfig',
     },
   },
 }

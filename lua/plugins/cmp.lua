@@ -22,7 +22,7 @@ return {
           {
             'rafamadriz/friendly-snippets',
             config = function()
-              require('luasnip.loaders.from_vscode').lazy_load()
+              require 'luasnip.loaders.from_vscode'
             end,
           },
         },
@@ -47,7 +47,7 @@ return {
       },
     },
     config = function()
-      require('vim-react-snippets').lazy_load()
+      require 'vim-react-snippets'
       -- See `:help cmp`
       local cmp = require 'cmp'
       local luasnip = require 'luasnip'
