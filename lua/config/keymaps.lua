@@ -14,11 +14,41 @@ vim.keymap.set('n', '<leader>bs', ':w<cr>', { desc = '[B]uffer [S]ave' })
 vim.keymap.set('n', '<leader>bd', ':bp | sp | bn | bd<cr>', { desc = '[B]uffer [D]elete / Close' })
 vim.keymap.set('n', '<leader>bs', ':w<cr>', { desc = '[B]uffer [S]ave' })
 
+-- Windows
+vim.keymap.set('n', '<leader>WV', ':windo wincmd H<cr>', { desc = '[W]indow Vertical' })
+vim.keymap.set('n', '<leader>WV', ':windo wincmd K<cr>', { desc = '[W]indow Horizontal' })
+
+vim.keymap.set('n', '<leader>Fj', function()
+  vim.cmd 'set ft=json'
+  vim.cmd "%!jq '.'"
+end, {
+  desc = 'Set [F]iletype [J]SON',
+})
+
+vim.keymap.set('n', '<leader>FJ', function()
+  vim.cmd 'tabnew'
+  -- Set buffer content to system clipboard
+  vim.cmd 'normal! "+p'
+  vim.cmd 'set ft=json'
+  vim.cmd "%!jq '.'"
+end, {
+  desc = 'Set [F]iletype [J]SON',
+})
+
 function SetKeybinds()
   local fileTy = vim.api.nvim_get_option_value('filetype', { buf = 0 })
 
   if fileTy == 'typescript' then
     require('which-key').add {
+      {
+        '<leader>cm',
+        function()
+          vim.opt.makeprg = 'npx tsc --pretty false \\| grep "./" \\| sed -r \'s/\\(([0-9]+),([0-9]+)\\)/:\\1:\\2/\' \\| sed "s@^@$PWD/@"'
+          vim.cmd 'make'
+          vim.cmd 'botright copen'
+        end,
+        desc = 'Run tsc Project Wide',
+      },
       {
         '<leader>co',
         function()
@@ -42,9 +72,9 @@ function SetKeybinds()
         desc = 'Run eslint Project Wide',
       },
       {
-        '<leader>cm',
+        '<leader>cL',
         function()
-          vim.opt.makeprg = 'npx tsc --pretty false \\| grep "./" \\| sed -r \'s/\\(([0-9]+),([0-9]+)\\)/:\\1:\\2/\' \\| sed "s@^@$PWD/@"'
+          vim.opt.makeprg = 'npm run lint -- --fix \\| grep "./" \\| sed -r \'s/\\(([0-9]+),([0-9]+)\\)/:\\1:\\2/\' \\| sed "s@^@$PWD/@"'
           vim.cmd 'make'
           vim.cmd 'botright copen'
         end,

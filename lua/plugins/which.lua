@@ -57,6 +57,7 @@ return {
         { '<leader>t', group = '[T]oggle' },
         { '<leader>g', group = '[G]it', mode = { 'n', 'v' } },
         { '<leader>u', group = '[U]I' },
+        { '<leader>W', group = '[W]indows' },
       },
     },
   },

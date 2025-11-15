@@ -17,42 +17,62 @@ return {
       -- virtual text for the debugger
       {
         'theHamsta/nvim-dap-virtual-text',
-        opts = {},
+        opts = {
+          display_callback = function(variable)
+            if #variable.value > 15 then
+              return ' ' .. variable.value:sub(1, 15) .. '...'
+            end
+            return ' ' .. variable.value
+          end,
+        },
       },
     },
 
     -- stylua: ignore
     keys = {
       -- { "<leader>DB", function() require("dap").set_breakpoint(vim.fn.input('Breakpoint condition: ')) end, desc = "Breakpoint Condition" },
-      { "<leader>DB", function()
-        require('config.lib.dap').set_conditional_breakpoint()
-      end, desc = "Breakpoint Condition" },
+      {
+        "<leader>DB",
+        function()
+          require('config.lib.dap').set_conditional_breakpoint()
+        end,
+        desc = "Breakpoint Condition"
+      },
       -- { "<leader>Db", function() require("dap").toggle_breakpoint() end,                                    desc = "Toggle Breakpoint" },
-      { "<leader>Db", function()
-        require('config.lib.dap').toggle_breakpoint()
-      end,                                    desc = "Toggle Breakpoint" },
-      { "<leader>DX", function()
-        require('config.lib.dap').clear_breakpoints()
-      end,                                    desc = "Toggle Breakpoint" },
-      { "<leader>Dc", function() require("dap").continue() end,                                             desc = "Run/Continue" },
-      { "<leader>Da", function() require("dap").continue({ before = get_args }) end,                        desc = "Run with Args" },
-      { "<leader>DC", function() require("dap").run_to_cursor() end,                                        desc = "Run to Cursor" },
-      { "<leader>Dg", function() require("dap").goto_() end,                                                desc = "Go to Line (No Execute)" },
-      { "<leader>Di", function() require("dap").step_into() end,                                            desc = "Step Into" },
-      { "<leader>Dj", function() require("dap").down() end,                                                 desc = "Down" },
-      { "<leader>Dk", function() require("dap").up() end,                                                   desc = "Up" },
-      { "<leader>Dl", function() require("dap").run_last() end,                                             desc = "Run Last" },
-      { "<leader>DO", function() require("dap").step_out() end,                                             desc = "Step Out" },
-      { "<leader>Do", function() require("dap").step_over() end,                                            desc = "Step Over" },
-      { "<leader>DP", function() require("dap").pause() end,                                                desc = "Pause" },
-      { "<leader>Dr", function() require("dap").repl.toggle() end,                                          desc = "Toggle REPL" },
-      { "<leader>Ds", function() require("dap").session() end,                                              desc = "Session" },
-      { "<leader>DT", function() require("dap").terminate() end,                                            desc = "Terminate" },
-      { "<leader>Dw", function() require("dap.ui.widgets").hover() end,                                     desc = "Widgets" },
-      { '[d',         vim.diagnostic.goto_prev,                                                             desc = 'Go to previous diagnostic message' },
-      { ']d',         vim.diagnostic.goto_next,                                                             desc = 'Go to next diagnostic message' },
-      { '<leader>Dm', vim.diagnostic.open_float,                                                            desc = 'Open floating diagnostic message' },
-      { '<leader>DL', vim.diagnostic.setloclist,                                                            desc = 'Open diagnostics list' },
+      {
+        "<leader>Db",
+        function()
+          require('config.lib.dap').toggle_breakpoint()
+        end,
+        desc = "Toggle Breakpoint"
+      },
+      {
+        "<leader>DX",
+        function()
+          require('config.lib.dap').clear_breakpoints()
+        end,
+        desc = "Clear all breakpoints"
+      },
+      { "<leader>Dc", function() require("dap").continue() end,                      desc = "Run/Continue" },
+      { "<leader>Da", function() require("dap").continue({ before = get_args }) end, desc = "Run with Args" },
+      { "<leader>DC", function() require("dap").run_to_cursor() end,                 desc = "Run to Cursor" },
+      { "<leader>Dg", function() require("dap").goto_() end,                         desc = "Go to Line (No Execute)" },
+      { "<leader>Di", function() require("dap").step_into() end,                     desc = "Step Into" },
+      { "<leader>Dj", function() require("dap").down() end,                          desc = "Down" },
+      { "<leader>Dk", function() require("dap").up() end,                            desc = "Up" },
+      { "<leader>Dl", function() require("dap").run_last() end,                      desc = "Run Last" },
+      { "<leader>DO", function() require("dap").step_out() end,                      desc = "Step Out" },
+      { "<leader>Do", function() require("dap").step_over() end,                     desc = "Step Over" },
+      { "<F10>",      function() require("dap").step_over() end,                     desc = "Step Over" },
+      { "<leader>DP", function() require("dap").pause() end,                         desc = "Pause" },
+      { "<leader>Dr", function() require("dap").repl.toggle() end,                   desc = "Toggle REPL" },
+      { "<leader>Ds", function() require("dap").session() end,                       desc = "Session" },
+      { "<leader>DT", function() require("dap").terminate({ all = true }) end,       desc = "Terminate" },
+      { "<leader>Dw", function() require("dap.ui.widgets").hover() end,              desc = "Widgets" },
+      { '[d',         vim.diagnostic.goto_prev,                                      desc = 'Go to previous diagnostic message' },
+      { ']d',         vim.diagnostic.goto_next,                                      desc = 'Go to next diagnostic message' },
+      { '<leader>Dm', vim.diagnostic.open_float,                                     desc = 'Open floating diagnostic message' },
+      { '<leader>DL', vim.diagnostic.setloclist,                                     desc = 'Open diagnostics list' },
     },
 
     config = function()
@@ -65,7 +85,7 @@ return {
     -- stylua: ignore
     keys = {
       { "<leader>Du", function() require("dapui").toggle({}) end, desc = "Dap UI toggle" },
-      { "<leader>De", function() require("dapui").eval() end,     desc = "Eval",  mode = { "n", "v" } },
+      { "<leader>De", function() require("dapui").eval() end,     desc = "Eval",         mode = { "n", "v" } },
     },
     opts = {
       render = {
@@ -88,57 +108,57 @@ return {
         dapui.close {}
       end
 
-      dap.adapters.delve = function(callback, config)
-        if config.mode == 'remote' and config.request == 'attach' then
-          callback {
-            type = 'server',
-            host = config.host or '127.0.0.1',
-            port = config.port or '38697',
-          }
-        else
-          callback {
-            type = 'server',
-            port = '${port}',
-            executable = {
-              command = 'dlv',
-              args = { 'dap', '-l', '127.0.0.1:${port}', '--log', '--log-output=dap' },
-              detached = vim.fn.has 'win32' == 0,
-            },
-          }
-        end
-      end
-
-      -- https://github.com/go-delve/delve/blob/master/Documentation/usage/dlv_dap.md
-      dap.configurations.go = {
-        {
-          type = 'delve',
-          name = 'Debug',
-          request = 'launch',
-          program = '${file}',
-        },
-        {
-          type = 'delve',
-          name = 'Debug test', -- configuration for debugging test files
-          request = 'launch',
-          mode = 'test',
-          program = '${file}',
-        },
-        -- works with go.mod packages and sub packages
-        {
-          type = 'delve',
-          name = 'Debug test (go.mod)',
-          request = 'launch',
-          mode = 'test',
-          program = './${relativeFileDirname}',
-        },
-      }
+      -- dap.adapters.delve = function(callback, config)
+      --   if config.mode == 'remote' and config.request == 'attach' then
+      --     callback {
+      --       type = 'server',
+      --       host = config.host or '127.0.0.1',
+      --       port = config.port or '38697',
+      --     }
+      --   else
+      --     callback {
+      --       type = 'server',
+      --       port = '${port}',
+      --       executable = {
+      --         command = 'dlv',
+      --         args = { 'dap', '-l', '127.0.0.1:${port}', '--log', '--log-output=dap' },
+      --         detached = vim.fn.has 'win32' == 0,
+      --       },
+      --     }
+      --   end
+      -- end
+      --
+      -- -- https://github.com/go-delve/delve/blob/master/Documentation/usage/dlv_dap.md
+      -- dap.configurations.go = {
+      --   {
+      --     type = 'delve',
+      --     name = 'Debug ./main.go',
+      --     request = 'launch',
+      --     program = '${workspaceFolder}/main.go',
+      --   },
+      --   {
+      --     type = 'delve',
+      --     name = 'Debug test', -- configuration for debugging test files
+      --     request = 'launch',
+      --     mode = 'test',
+      --     program = '${file}',
+      --   },
+      --   -- works with go.mod packages and sub packages
+      --   {
+      --     type = 'delve',
+      --     name = 'Debug test (go.mod)',
+      --     request = 'launch',
+      --     mode = 'test',
+      --     program = './${relativeFileDirname}',
+      --   },
+      -- }
 
       dap.adapters['pwa-node'] = {
         type = 'server',
         host = 'localhost',
         port = '${port}',
         executable = {
-          command = 'js-debug',
+          command = 'js-debug-adapter',
           args = { '${port}' },
         },
       }
@@ -147,7 +167,7 @@ return {
         host = 'localhost',
         port = '${port}',
         executable = {
-          command = 'js-debug',
+          command = 'js-debug-adapter',
           args = { '${port}' },
         },
       }
@@ -156,7 +176,7 @@ return {
         host = 'localhost',
         port = '${port}',
         executable = {
-          command = 'js-debug',
+          command = 'js-debug-adapter',
           args = { '${port}' },
         },
       }
@@ -180,7 +200,7 @@ return {
           {
             type = 'pwa-node',
             request = 'launch',
-            name = '[node] Launch dev tsx',
+            name = '[node] Launch file tsx',
             -- program = '${file}',
             runtimeExecutable = 'npx',
             rootPath = '${workspaceFolder}',
@@ -189,7 +209,7 @@ return {
             -- cwd = vim.fn.getcwd(),
             -- args = { 'ts-node-dev', '--', '--transpile-only', '--require ', './src/server.ts' },
             -- args = { "${file}" },
-            runtimeArgs = { 'ts-node-dev', '--transpile-only', '--require', 'dotenv/config', '${file}' },
+            runtimeArgs = { 'tsx', '--env-file=.env', '${file}' },
             sourceMaps = true,
             protocol = 'inspector',
             console = 'integratedTerminal',
@@ -213,6 +233,53 @@ return {
             -- args = { 'ts-node-dev', '--', '--transpile-only', '--require ', './src/server.ts' },
             -- args = { "${file}" },
             runtimeArgs = { 'run', 'dev', '--inspect' },
+            sourceMaps = true,
+            protocol = 'inspector',
+            console = 'integratedTerminal',
+            outFiles = { '${workspaceFolder}/dist/**/*.js' },
+            -- skipFiles = { '${workspaceFolder}/node_modules/**/*.js', '<node_internals>/**' },
+            resolveSourceMapLocations = {
+              '${workspaceFolder}/**',
+              '!**/node_modules/**',
+            },
+          },
+          {
+            type = 'pwa-node',
+            request = 'launch',
+            name = '[node] Launch npm run develop',
+            -- program = '${file}',
+            runtimeExecutable = 'npm',
+            rootPath = '${workspaceFolder}',
+            cwd = '${workspaceFolder}',
+            -- rootPath = vim.fn.getcwd(),
+            -- cwd = vim.fn.getcwd(),
+            -- args = { 'ts-node-dev', '--', '--transpile-only', '--require ', './src/server.ts' },
+            -- args = { "${file}" },
+            runtimeArgs = { 'run', 'develop', '--inspect' },
+            sourceMaps = true,
+            protocol = 'inspector',
+            console = 'integratedTerminal',
+            outFiles = { '${workspaceFolder}/dist/**/*.js' },
+            -- skipFiles = { '${workspaceFolder}/node_modules/**/*.js', '<node_internals>/**' },
+            -- skipFiles = {},
+            resolveSourceMapLocations = {
+              '${workspaceFolder}/**',
+              '!**/node_modules/**',
+            },
+          },
+          {
+            type = 'pwa-node',
+            request = 'launch',
+            name = '[node] Launch npm run test',
+            -- program = '${file}',
+            runtimeExecutable = 'npm',
+            rootPath = '${workspaceFolder}',
+            cwd = '${workspaceFolder}',
+            -- rootPath = vim.fn.getcwd(),
+            -- cwd = vim.fn.getcwd(),
+            -- args = { 'ts-node-dev', '--', '--transpile-only', '--require ', './src/server.ts' },
+            -- args = { "${file}" },
+            runtimeArgs = { 'run', 'test', '--inspect' },
             sourceMaps = true,
             protocol = 'inspector',
             console = 'integratedTerminal',
@@ -272,5 +339,9 @@ return {
         }
       end
     end,
+  },
+  {
+    'leoluz/nvim-dap-go',
+    opts = {},
   },
 }
