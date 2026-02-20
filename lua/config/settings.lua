@@ -16,8 +16,13 @@ vim.opt.foldlevelstart = 99
 vim.opt.ignorecase = true
 vim.opt.inccommand = 'split'
 vim.opt.linebreak = true
-vim.opt.list = true -- Show non-space whitespace
-vim.opt.listchars = { tab = '» ', trail = '·', nbsp = '␣' }
+
+-- Show non-space whitespace
+vim.opt.list = true
+-- vim.opt.listchars = { tab = '» ', trail = '·', nbsp = '␣' }
+vim.opt.listchars = { tab = '| ', trail = '·', nbsp = '␣' }
+-- vim.opt.listchars = { nbsp = '␣' }
+
 vim.opt.number = true
 vim.opt.relativenumber = true
 vim.opt.scrolloff = 4

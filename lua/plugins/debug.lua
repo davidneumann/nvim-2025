@@ -180,6 +180,21 @@ return {
           args = { '${port}' },
         },
       }
+      dap.adapters.bun = {
+        type = 'executable',
+        command = '/home/david/.bun/bin/bun', -- Or the full path to your bun executable
+        args = { '--inspect' }, -- Essential Bun debugging flags
+      }
+
+      dap.configurations.typescript = {
+        {
+          type = 'bun',
+          request = 'launch',
+          name = 'Launch Bun file',
+          program = '${file}', -- Debug the current file
+          cwd = '${workspaceFolder}',
+        },
+      }
 
       for _, language in ipairs(js_based_languages) do
         dap.configurations[language] = {
@@ -335,6 +350,13 @@ return {
               '${workspaceFolder}/**',
               '!**/node_modules/**',
             },
+          },
+          {
+            type = 'bun',
+            request = 'launch',
+            name = 'Launch Bun file',
+            program = '${file}', -- Debug the current file
+            cwd = '${workspaceFolder}',
           },
         }
       end

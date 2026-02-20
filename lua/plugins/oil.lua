@@ -4,7 +4,7 @@ return {
     ---@module 'oil'
     ---@type oil.SetupOpts
     opts = {
-      columns = { 'icons' },
+      columns = { 'icons', 'permissions', 'size', 'mtime', 'time' },
       keymaps = {
         ['<C-h>'] = false,
         ['<M-h>'] = 'actions.select_split',
@@ -12,6 +12,9 @@ return {
       },
       view_options = {
         show_hidden = true,
+      },
+      float = {
+        border = 'single',
       },
     },
     -- Optional dependencies

@@ -3,8 +3,8 @@ local map = function(keys, func, desc, mode)
   vim.keymap.set(mode, keys, func, { desc = '[O]bsidian: ' .. desc })
 end
 
-vim.opt.wrap = false
-vim.opt.linebreak = false
+-- vim.opt.wrap = false
+-- vim.opt.linebreak = false
 
 require('which-key').add { '<leader>o', group = '[O]bsidian' }
 
