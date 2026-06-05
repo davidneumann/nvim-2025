@@ -1,1 +1,1 @@
-vim.lsp.enable { 'gopls', 'luals', 'ts_ls' }
+vim.lsp.enable { 'gopls', 'luals', 'ts_ls', 'python' }
