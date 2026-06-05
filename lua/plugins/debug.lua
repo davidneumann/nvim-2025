@@ -84,8 +84,9 @@ return {
     dependencies = { 'nvim-neotest/nvim-nio' },
     -- stylua: ignore
     keys = {
-      { "<leader>Du", function() require("dapui").toggle({}) end, desc = "Dap UI toggle" },
-      { "<leader>De", function() require("dapui").eval() end,     desc = "Eval",         mode = { "n", "v" } },
+      { "<leader>Du", function() require("dapui").toggle({}) end,               desc = "Dap UI toggle" },
+      { "<leader>DU", function() require("dapui").toggle({ reset = true }) end, desc = "Dap UI toggle and Reset" },
+      { "<leader>De", function() require("dapui").eval() end,                   desc = "Eval",                   mode = { "n", "v" } },
     },
     opts = {
       render = {
@@ -183,7 +184,7 @@ return {
       dap.adapters.bun = {
         type = 'executable',
         command = '/home/david/.bun/bin/bun', -- Or the full path to your bun executable
-        args = { '--inspect' }, -- Essential Bun debugging flags
+        args = { '--inspect' },               -- Essential Bun debugging flags
       }
 
       dap.configurations.typescript = {
